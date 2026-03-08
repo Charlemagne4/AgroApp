@@ -3,8 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { LatestPost } from "@/app/_components/post";
-import { auth } from "@/server/better-auth";
-import { getSession } from "@/server/better-auth/server";
+import { auth } from "@MyApp/auth/index";
+import { getSession } from "@MyApp/auth/server";
 import { api, HydrateClient } from "@/trpc/server";
 
 export default async function Home() {
