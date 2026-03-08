@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@repo/ui/styles/globals";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
