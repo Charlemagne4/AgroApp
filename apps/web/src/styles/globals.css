@@ -1,6 +1,5 @@
 @import "tailwindcss";
+@import "@repo/ui/globals.css"; /* your current import */
 
-@theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
+/* Re-declare source for your app's own files */
+@source "../";
