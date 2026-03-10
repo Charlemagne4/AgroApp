@@ -26,6 +26,9 @@ importers:
       '@MyApp/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@MyApp/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
       '@auth/prisma-adapter':
         specifier: ^2.7.2
         version: 2.11.1(@prisma/client@6.19.2(prisma@6.19.2(typescript@5.9.2))(typescript@5.9.2))
@@ -284,6 +287,9 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
     devDependencies:
+      '@MyApp/validators':
+        specifier: workspace:*
+        version: link:../validators
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
@@ -305,6 +311,12 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+
+  packages/validators:
+    dependencies:
+      zod:
+        specifier: ^3.x
+        version: 3.25.76
 
 packages:
 

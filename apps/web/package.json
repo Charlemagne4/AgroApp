@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@MyApp/validators": "workspace:*",
     "@MyApp/auth": "workspace:*",
     "@MyApp/db": "workspace:*",
     "@auth/prisma-adapter": "^2.7.2",

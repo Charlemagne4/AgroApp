@@ -4,6 +4,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { env } from '../../../../apps/web/src/env';
 import { db } from '@MyApp/db';
 import { nextCookies } from 'better-auth/next-js';
+import { username } from 'better-auth/plugins';
 
 export const auth = betterAuth({
   baseURL: 'http://localhost:3000',
@@ -21,7 +22,7 @@ export const auth = betterAuth({
       redirectUR: 'http://localhost:3000/api/auth/callback/github',
     },
   },
-  plugins: [nextCookies()], // add this
+  plugins: [username(), nextCookies()], // add this
 });
 
 export type Session = typeof auth.$Infer.Session;
