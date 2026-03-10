@@ -20,10 +20,24 @@ import { Input } from '@repo/ui/components/input';
 import { cn } from '@repo/ui/lib/utils';
 
 import { registerFormSchema as formSchema } from '@MyApp/validators';
-
+import { authClient } from '@MyApp/auth/client';
+import { useEffect, useState, useTransition } from 'react';
+import { Spinner } from './spinner';
+import { Eye, EyeOff } from 'lucide-react';
 type FormValues = z.infer<typeof formSchema>;
 
-export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
+interface Props {
+  onNavigate: (path: string) => void;
+}
+
+export function SignupForm({
+  className,
+  onNavigate,
+  ...props
+}: React.ComponentProps<'div'> & Props) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [status, setStatus] = useState<'available' | 'taken' | 'checking' | undefined>(undefined); //
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,9 +48,56 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
     },
   });
 
-  function onSubmit(data: FormValues) {
-    // Do something with the form values.
-    console.log(data);
+  const username = form.watch('username');
+  useEffect(() => {
+    if (!username || username.length < 3) {
+      setStatus(undefined);
+      return;
+    }
+
+    setStatus('checking');
+    const controller = new AbortController();
+
+    const timer = setTimeout(async () => {
+      const { data, error } = await authClient.isUsernameAvailable({
+        username,
+        fetchOptions: { signal: controller.signal },
+      });
+
+      if (error) {
+        setStatus(undefined);
+        return;
+      }
+
+      setStatus(data.available ? 'available' : 'taken');
+    }, 400);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort(); // ← React runs this cleanup when `username` changes
+      //   which cancels the in-flight fetch immediately
+    };
+  }, [username]);
+
+  const [isPending, startTransition] = useTransition();
+
+  const [emailStatus, setEmailStatus] = useState<string | undefined>(undefined);
+
+  async function onSubmit(formValues: FormValues) {
+    const { email, password, username } = formValues;
+    startTransition(async () => {
+      const { data, error } = await authClient.signUp.email({
+        email, // required
+        name: username, // required
+        password, // required
+        username: username,
+      });
+      if (error) {
+        setEmailStatus(error.message);
+      } else {
+        onNavigate('/');
+      }
+    });
   }
 
   return (
@@ -63,6 +124,16 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                       </FormControl>
                       {fieldState.error ? (
                         <FormMessage />
+                      ) : status === 'checking' ? (
+                        <FormDescription className="flex items-center gap-1">
+                          <Spinner /> Checking availability...
+                        </FormDescription>
+                      ) : status === 'available' ? (
+                        <FormDescription className="text-green-500">
+                          ✓ Username is available
+                        </FormDescription>
+                      ) : status === 'taken' ? (
+                        <FormMessage>Username is already taken</FormMessage>
                       ) : (
                         <FormDescription>Work your imagination.</FormDescription>
                       )}
@@ -81,6 +152,8 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                       </FormControl>
                       {fieldState.error ? (
                         <FormMessage />
+                      ) : emailStatus ? (
+                        <FormMessage> {emailStatus} </FormMessage>
                       ) : (
                         <FormDescription>
                           We&apos;ll use this to contact you. We will not share your email with
@@ -99,8 +172,21 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" required {...field} />
+                          <div className="flex">
+                            <Input type={showPassword ? 'text' : 'password'} required {...field} />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+                              aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </Button>
+                          </div>
                         </FormControl>
+
                         {fieldState.error ? (
                           <FormMessage />
                         ) : (
@@ -126,16 +212,23 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                         ) : (
                           <FormDescription>Re-enter the same password.</FormDescription>
                         )}
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+                <Field className="mt-4">
+                  <Button type="submit" disabled={isPending}>
+                    {isPending ? (
+                      <p className="flex">
+                        Creating {'  '}
+                        <Spinner />
+                      </p>
+                    ) : (
+                      'Create Account'
+                    )}
+                  </Button>
+                </Field>
               </FieldGroup>
-
-              <Field className="mt-4">
-                <Button type="submit">Create Account</Button>
-              </Field>
 
               <div className="mt-7 grid gap-7">
                 <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -177,7 +270,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
               </div>
             </form>
           </Form>
-
           <div className="bg-muted relative hidden md:block">
             <img
               src="/placeholder.svg"
@@ -187,7 +279,6 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
           </div>
         </CardContent>
       </Card>
-
       <p className="text-muted-foreground px-6 text-center text-sm">
         By clicking continue, you agree to our <a href="#">Terms of Service</a> and{' '}
         <a href="#">Privacy Policy</a>.

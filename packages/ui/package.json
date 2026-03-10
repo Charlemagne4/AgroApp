@@ -14,6 +14,7 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
+    "@MyApp/auth": "workspace:*",
     "@MyApp/validators": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

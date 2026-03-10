@@ -51,7 +51,17 @@ export const registerFormSchema = registerSchema
 
 // Login Form Schema
 export const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address.'),
+  identifier: z
+    .string()
+    .min(1, 'Email or username is required.')
+    .refine(
+      (val) => {
+        const isEmail = z.string().email().safeParse(val).success;
+        const isUsername = /^[a-zA-Z0-9_]{3,30}$/.test(val);
+        return isEmail || isUsername;
+      },
+      { message: 'Please enter a valid email or username.' },
+    ),
 
   password: z.string().min(1, 'Password is required.'),
 });

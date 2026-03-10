@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth';
+import { env } from '../env';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 
-import { env } from '../../../../apps/web/src/env';
 import { db } from '@MyApp/db';
 import { nextCookies } from 'better-auth/next-js';
 import { username } from 'better-auth/plugins';

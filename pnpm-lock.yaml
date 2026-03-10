@@ -141,6 +141,9 @@ importers:
       '@better-auth/prisma-adapter':
         specifier: ^1.5.3
         version: 1.5.3(@better-auth/core@1.5.3(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(better-call@1.3.2(zod@4.3.6))(jose@6.1.3)(kysely@0.28.11)(nanostores@1.1.1))(@better-auth/utils@0.3.1)(@prisma/client@6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3))(prisma@6.19.2(typescript@5.9.3))
+      '@t3-oss/env-nextjs':
+        specifier: ^0.12.0
+        version: 0.12.0(typescript@5.9.3)(zod@4.3.6)
       better-auth:
         specifier: ^1.3
         version: 1.5.3(@better-auth/prisma-adapter@1.5.3(@better-auth/core@1.5.3(@better-auth/utils@0.3.1)(@better-fetch/fetch@1.1.21)(better-call@1.3.2(zod@4.3.6))(jose@6.1.3)(kysely@0.28.11)(nanostores@1.1.1))(@better-auth/utils@0.3.1)(@prisma/client@6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3))(prisma@6.19.2(typescript@5.9.3)))(@prisma/client@6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3))(next@15.5.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(prisma@6.19.2(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -287,6 +290,9 @@ importers:
         specifier: ^3.24.2
         version: 3.25.76
     devDependencies:
+      '@MyApp/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@MyApp/validators':
         specifier: workspace:*
         version: link:../validators
@@ -4779,12 +4785,24 @@ snapshots:
       typescript: 5.9.2
       zod: 3.25.76
 
+  '@t3-oss/env-core@0.12.0(typescript@5.9.3)(zod@4.3.6)':
+    optionalDependencies:
+      typescript: 5.9.3
+      zod: 4.3.6
+
   '@t3-oss/env-nextjs@0.12.0(typescript@5.9.2)(zod@3.25.76)':
     dependencies:
       '@t3-oss/env-core': 0.12.0(typescript@5.9.2)(zod@3.25.76)
     optionalDependencies:
       typescript: 5.9.2
       zod: 3.25.76
+
+  '@t3-oss/env-nextjs@0.12.0(typescript@5.9.3)(zod@4.3.6)':
+    dependencies:
+      '@t3-oss/env-core': 0.12.0(typescript@5.9.3)(zod@4.3.6)
+    optionalDependencies:
+      typescript: 5.9.3
+      zod: 4.3.6
 
   '@tabby_ai/hijri-converter@1.0.5': {}
 
